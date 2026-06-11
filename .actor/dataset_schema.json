@@ -1,0 +1,25 @@
+{
+    "type": "object",
+    "properties": {
+        "source": { "type": "string" },
+        "sourceJobId": { "type": "string" },
+        "title": { "type": "string" },
+        "companyName": { "type": "string" },
+        "location": { "type": ["string", "null"] },
+        "remote": { "type": ["boolean", "null"] },
+        "jobType": { "type": ["string", "null"] },
+        "category": { "type": ["string", "null"] },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "salary": { "type": ["string", "null"] },
+        "salaryMin": { "type": ["number", "null"] },
+        "salaryMax": { "type": ["number", "null"] },
+        "postedAt": { "type": ["string", "null"] },
+        "jobUrl": { "type": "string" },
+        "applyUrl": { "type": ["string", "null"] },
+        "sourceAttribution": { "type": "string" },
+        "keywordUsed": { "type": ["string", "null"] },
+        "scrapedAt": { "type": "string" },
+        "descriptionText": { "type": "string" }
+    },
+    "required": ["source", "sourceJobId", "title", "companyName", "jobUrl", "sourceAttribution", "scrapedAt"]
+}

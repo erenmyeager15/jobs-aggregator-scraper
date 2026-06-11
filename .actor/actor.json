@@ -1,0 +1,81 @@
+{
+    "actorSpecification": 1,
+    "name": "jobs-aggregator-scraper",
+    "title": "Jobs Aggregator Scraper - Remote Job APIs",
+    "description": "Scrape no-key public job APIs from Remote OK, Remotive, and Arbeitnow into one clean dataset with titles, companies, locations, salaries, URLs, and source attribution.",
+    "version": "1.0",
+    "categories": ["JOBS", "LEAD_GENERATION", "RESEARCH"],
+    "dockerfile": "Dockerfile",
+    "input": "../INPUT_SCHEMA.json",
+    "storages": {
+        "dataset": {
+            "actorSpecification": 1,
+            "views": {
+                "jobs": {
+                    "title": "Job Records",
+                    "transformation": {
+                        "fields": [
+                            "source",
+                            "keywordUsed",
+                            "sourceJobId",
+                            "title",
+                            "companyName",
+                            "location",
+                            "remote",
+                            "jobType",
+                            "category",
+                            "salary",
+                            "postedAt",
+                            "jobUrl",
+                            "applyUrl",
+                            "sourceAttribution",
+                            "scrapedAt"
+                        ]
+                    },
+                    "display": {
+                        "component": "table",
+                        "properties": {
+                            "source": { "label": "Source", "format": "text" },
+                            "keywordUsed": { "label": "Keyword", "format": "text" },
+                            "sourceJobId": { "label": "Source Job ID", "format": "text" },
+                            "title": { "label": "Title", "format": "text" },
+                            "companyName": { "label": "Company", "format": "text" },
+                            "location": { "label": "Location", "format": "text" },
+                            "remote": { "label": "Remote", "format": "boolean" },
+                            "jobType": { "label": "Job Type", "format": "text" },
+                            "category": { "label": "Category", "format": "text" },
+                            "salary": { "label": "Salary", "format": "text" },
+                            "postedAt": { "label": "Posted At", "format": "date" },
+                            "jobUrl": { "label": "Job URL", "format": "link" },
+                            "applyUrl": { "label": "Apply URL", "format": "link" },
+                            "sourceAttribution": { "label": "Attribution", "format": "text" },
+                            "scrapedAt": { "label": "Scraped At", "format": "date" }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "pricingInfo": {
+        "pricingModel": "PAY_PER_EVENT",
+        "pricingPerEvent": {
+            "actorChargeEvents": {
+                "job-scraped": {
+                    "eventTitle": "Job scraped",
+                    "eventDescription": "Charged once for each clean job record saved to the dataset.",
+                    "eventPriceUsd": 0.002,
+                    "isPrimaryEvent": true,
+                    "isOneTimeEvent": false
+                }
+            }
+        }
+    },
+    "defaultRunOptions": {
+        "build": "latest",
+        "memoryMbytes": 1024,
+        "timeoutSecs": 3600
+    },
+    "minMemoryMbytes": 512,
+    "maxMemoryMbytes": 4096,
+    "webScraper": false
+}

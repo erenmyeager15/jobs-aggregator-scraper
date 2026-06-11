@@ -1,0 +1,82 @@
+{
+    "title": "Jobs Aggregator Scraper Input",
+    "description": "Search no-key public job APIs and export clean, deduplicated job listings.",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "source": {
+            "title": "Source",
+            "type": "string",
+            "description": "Choose one job API source or search all supported sources.",
+            "editor": "select",
+            "default": "all",
+            "prefill": "all",
+            "enum": ["all", "remoteok", "remotive", "arbeitnow"],
+            "enumTitles": ["All sources", "Remote OK", "Remotive", "Arbeitnow"]
+        },
+        "keywords": {
+            "title": "Keywords",
+            "type": "array",
+            "description": "Job title, skill, or company keywords. Records must match at least one keyword.",
+            "editor": "stringList",
+            "prefill": ["developer"],
+            "example": ["developer", "data analyst", "product manager"],
+            "items": {
+                "type": "string"
+            }
+        },
+        "location": {
+            "title": "Location Contains",
+            "type": "string",
+            "description": "Optional text filter for job location, such as Worldwide, Europe, Germany, London, or Remote.",
+            "editor": "textfield",
+            "default": "",
+            "prefill": ""
+        },
+        "remoteOnly": {
+            "title": "Remote Only",
+            "type": "boolean",
+            "description": "Only keep jobs that are remote or from remote-first sources.",
+            "editor": "checkbox",
+            "default": true,
+            "prefill": true
+        },
+        "dateFrom": {
+            "title": "Posted From",
+            "type": "string",
+            "description": "Optional ISO date filter. Jobs without a parseable posted date are excluded when this is set.",
+            "editor": "datepicker",
+            "default": "",
+            "prefill": ""
+        },
+        "maxResults": {
+            "title": "Max Results",
+            "type": "integer",
+            "description": "Maximum clean job records to save.",
+            "editor": "number",
+            "default": 100,
+            "prefill": 100,
+            "minimum": 1,
+            "maximum": 1000
+        },
+        "maxPagesPerSource": {
+            "title": "Max Pages Per Source",
+            "type": "integer",
+            "description": "Pagination limit for sources that expose pages. Remote OK and Remotive are single-response APIs.",
+            "editor": "number",
+            "default": 3,
+            "prefill": 3,
+            "minimum": 1,
+            "maximum": 20
+        },
+        "includeDescription": {
+            "title": "Include Description",
+            "type": "boolean",
+            "description": "Include cleaned job description text in the dataset. This makes records larger.",
+            "editor": "checkbox",
+            "default": false,
+            "prefill": false
+        }
+    },
+    "required": ["keywords"]
+}

@@ -1,0 +1,26 @@
+{
+    "name": "jobs-aggregator-scraper",
+    "version": "1.0.0",
+    "type": "module",
+    "description": "Apify Actor that aggregates no-key public job APIs into clean job lead records.",
+    "engines": {
+        "node": ">=20.0.0"
+    },
+    "scripts": {
+        "start": "npm run build && node dist/main.js",
+        "build": "tsc",
+        "dev": "tsc && node dist/main.js",
+        "lint": "tsc --noEmit",
+        "test": "npm run build"
+    },
+    "dependencies": {
+        "apify": "^3.2.6"
+    },
+    "devDependencies": {
+        "@apify/tsconfig": "^0.1.0",
+        "@types/node": "^20.0.0",
+        "typescript": "~5.6.0"
+    },
+    "author": "",
+    "license": "Apache-2.0"
+}

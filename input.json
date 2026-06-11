@@ -1,0 +1,10 @@
+{
+    "source": "all",
+    "keywords": ["developer"],
+    "location": "",
+    "remoteOnly": true,
+    "dateFrom": "",
+    "maxResults": 20,
+    "maxPagesPerSource": 2,
+    "includeDescription": false
+}
