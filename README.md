@@ -7,8 +7,8 @@ Jobs Aggregator Scraper collects job listings from no-key public job APIs and ex
 - Source and source job ID
 - Job title and company name
 - Location and remote flag
-- Job type, category, and tags
-- Salary text plus numeric salary min/max where the source provides them
+- Category and tags
+- Optional job type and salary fields where the source provides them
 - Posted date
 - Job URL and apply URL
 - Source attribution
@@ -87,7 +87,7 @@ The actor calls public JSON APIs, normalizes each source into a shared job schem
 - Remotive requires linking back to Remotive job URLs and source attribution, and should not be used to repost jobs to third-party job boards.
 - Arbeitnow asks API users not to abuse the service and appreciates source links; its general site terms should be reviewed for your use case.
 - Remote OK includes anti-spam application text inside some descriptions; keep `includeDescription` off if you only need lead fields.
-- Salary fields are source-dependent and often unavailable.
+- Job type and salary fields are source-dependent and omitted from records when unavailable.
 
 ## License
 

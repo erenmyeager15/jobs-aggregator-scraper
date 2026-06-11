@@ -29,7 +29,7 @@ export async function fetchJobsFromSources(input: ActorInput): Promise<JobRecord
             if (source === 'arbeitnow') sourceResults.push(await fetchArbeitnow(context));
         }
 
-        return dedupeAndLimit(sourceResults.flat(), input).map(({ rawSearchText: _rawSearchText, ...record }) => ({
+        return dedupeAndLimit(sourceResults.flat(), input).map(({ rawSearchText: _rawSearchText, ...record }) => compactJobRecord({
             ...record,
             scrapedAt: new Date().toISOString(),
         }));
@@ -255,6 +255,19 @@ async function fetchJson<T>(url: string, signal: AbortSignal): Promise<T> {
 
 function isUsableJob(job: NormalizedSourceJob): boolean {
     return Boolean(job.sourceJobId && job.title && job.companyName && job.jobUrl);
+}
+
+function compactJobRecord(record: JobRecord): JobRecord {
+    const compact: Record<string, unknown> = {};
+
+    for (const [key, value] of Object.entries(record)) {
+        if (value === null || value === undefined) continue;
+        if (Array.isArray(value) && value.length === 0) continue;
+        if (typeof value === 'string' && value.trim() === '') continue;
+        compact[key] = value;
+    }
+
+    return compact as unknown as JobRecord;
 }
 
 function sortByDateDesc(a: NormalizedSourceJob, b: NormalizedSourceJob): number {
