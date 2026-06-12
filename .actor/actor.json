@@ -4,7 +4,7 @@
     "title": "Jobs Aggregator Scraper - Remote Job APIs",
     "description": "Scrape no-key public job APIs from Remote OK, Remotive, and Arbeitnow into one clean dataset with titles, companies, locations, salaries, URLs, and source attribution.",
     "version": "1.0",
-    "categories": ["JOBS", "LEAD_GENERATION", "RESEARCH"],
+    "categories": ["JOBS", "RESEARCH"],
     "dockerfile": "Dockerfile",
     "input": "../INPUT_SCHEMA.json",
     "storages": {

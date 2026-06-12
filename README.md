@@ -89,6 +89,12 @@ The actor calls public JSON APIs, normalizes each source into a shared job schem
 - Remote OK includes anti-spam application text inside some descriptions; keep `includeDescription` off if you only need lead fields.
 - Job type and salary fields are source-dependent and omitted from records when unavailable.
 
+## Responsible Use
+
+This Actor is intended for lawful collection of publicly available information only. Users are responsible for ensuring their use complies with the source website's terms, robots.txt, applicable privacy laws, including India's DPDP Act, and all local regulations.
+
+Do not use this Actor to collect, store, sell, or misuse personal data without a lawful basis. The Actor author is not responsible for misuse by end users.
+
 ## License
 
 Apache-2.0
