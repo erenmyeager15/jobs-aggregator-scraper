@@ -69,8 +69,8 @@ The actor charges only after a clean job record is saved to the dataset.
   "salaryMin": 90000,
   "salaryMax": 130000,
   "postedAt": "2026-06-10T16:00:53+00:00",
-  "jobUrl": "https://remoteOK.com/remote-jobs/remote-senior-sdet-ndeavour-consulting-1133163",
-  "applyUrl": "https://remoteOK.com/remote-jobs/remote-senior-sdet-ndeavour-consulting-1133163",
+  "jobUrl": "https://remoteok.com/remote-jobs/remote-senior-sdet-ndeavour-consulting-1133163",
+  "applyUrl": "https://remoteok.com/remote-jobs/remote-senior-sdet-ndeavour-consulting-1133163",
   "sourceAttribution": "Remote OK",
   "keywordUsed": "developer",
   "scrapedAt": "2026-06-12T00:00:00.000Z"
