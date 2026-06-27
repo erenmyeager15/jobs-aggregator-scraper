@@ -1,0 +1,14 @@
+{
+  "actorOutputSchemaVersion": 1,
+  "title": "Jobs Aggregator Scraper Output",
+  "description": "Structured job records from public job APIs with source, keyword, job IDs, titles, companies, locations, remote flags, categories, posting dates, job URLs, apply URLs, attribution, and scraped timestamps.",
+  "type": "object",
+  "properties": {
+    "results": {
+      "type": "string",
+      "title": "Job records",
+      "description": "Clean dataset items containing remote job listings aggregated from public job APIs.",
+      "template": "{{links.apiDefaultDatasetUrl}}/items"
+    }
+  }
+}
