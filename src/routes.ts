@@ -1,3 +1,4 @@
+import { log } from 'apify';
 import type {
     ActorInput,
     ArbeitnowJob,
@@ -22,11 +23,26 @@ export async function fetchJobsFromSources(input: ActorInput): Promise<JobRecord
         const context: FetchContext = { input, signal: controller.signal };
         const selected = getSelectedSources(input.source);
         const sourceResults: NormalizedSourceJob[][] = [];
+        const skippedSources: Array<{ source: string; reason: string }> = [];
 
         for (const source of selected) {
-            if (source === 'remoteok') sourceResults.push(await fetchRemoteOk(context));
-            if (source === 'remotive') sourceResults.push(await fetchRemotive(context));
-            if (source === 'arbeitnow') sourceResults.push(await fetchArbeitnow(context));
+            try {
+                if (source === 'remoteok') sourceResults.push(await fetchRemoteOk(context));
+                if (source === 'remotive') sourceResults.push(await fetchRemotive(context));
+                if (source === 'arbeitnow') sourceResults.push(await fetchArbeitnow(context));
+            } catch (error) {
+                const reason = error instanceof Error ? error.message : String(error);
+                skippedSources.push({ source, reason });
+                log.warning('Skipping job source after repeated request failures', { source, reason });
+            }
+        }
+
+        if (sourceResults.length === 0 && skippedSources.length > 0) {
+            throw new Error(`All selected job sources failed: ${skippedSources.map((item) => `${item.source}: ${item.reason}`).join('; ')}`);
+        }
+
+        if (skippedSources.length > 0) {
+            log.warning('Some job sources were skipped; returning records from successful sources', { skippedSources });
         }
 
         return dedupeAndLimit(sourceResults.flat(), input).map(({ rawSearchText: _rawSearchText, ...record }) => compactJobRecord({
@@ -92,7 +108,16 @@ async function fetchRemotive({ input, signal }: FetchContext): Promise<Normalize
         params.set('limit', String(perSearchLimit));
         if (keyword) params.set('search', keyword);
 
-        const json = await fetchJson<{ jobs?: RemotiveJob[] }>(`https://remotive.com/api/remote-jobs?${params}`, signal);
+        let json: { jobs?: RemotiveJob[] };
+        try {
+            json = await fetchJson<{ jobs?: RemotiveJob[] }>(`https://remotive.com/api/remote-jobs?${params}`, signal);
+        } catch (error) {
+            log.warning('Skipping Remotive keyword after request failure', {
+                keyword,
+                reason: error instanceof Error ? error.message : String(error),
+            });
+            continue;
+        }
         const sourceJobs = Array.isArray(json.jobs) ? json.jobs : [];
 
         for (const job of sourceJobs) {
@@ -143,10 +168,19 @@ async function fetchArbeitnow({ input, signal }: FetchContext): Promise<Normaliz
         params.set('page', String(page));
         if (input.remoteOnly) params.set('remote', 'true');
 
-        const json = await fetchJson<{ data?: ArbeitnowJob[]; links?: { next?: string | null } }>(
-            `https://www.arbeitnow.com/api/job-board-api?${params}`,
-            signal,
-        );
+        let json: { data?: ArbeitnowJob[]; links?: { next?: string | null } };
+        try {
+            json = await fetchJson<{ data?: ArbeitnowJob[]; links?: { next?: string | null } }>(
+                `https://www.arbeitnow.com/api/job-board-api?${params}`,
+                signal,
+            );
+        } catch (error) {
+            log.warning('Stopping Arbeitnow pagination after request failure', {
+                page,
+                reason: error instanceof Error ? error.message : String(error),
+            });
+            break;
+        }
         const sourceJobs = Array.isArray(json.data) ? json.data : [];
 
         for (const job of sourceJobs) {
