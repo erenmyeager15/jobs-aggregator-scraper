@@ -5,7 +5,7 @@
     "description": "Aggregate public remote job listings from Remote OK, Remotive, and Arbeitnow into one clean dataset with titles, companies, locations, salaries, URLs, and source attribution.",
     "version": "1.0",
     "buildTag": "latest",
-    "categories": ["JOBS", "RESEARCH", "AUTOMATION"],
+    "categories": ["JOBS", "AUTOMATION"],
     "dockerfile": "Dockerfile",
     "input": "../INPUT_SCHEMA.json",
     "readme": "../README.md",
