@@ -1,100 +1,153 @@
-# Jobs Aggregator Scraper - Remote Job APIs
+# Jobs Aggregator Scraper
 
-Jobs Aggregator Scraper collects job listings from no-key public job APIs and exports clean records for recruiting research, lead generation, labor-market analysis, and job-board enrichment. It currently supports Remote OK, Remotive, and Arbeitnow. Export to JSON, CSV, Excel, or HTML, or pull via the Apify API. No login or API key is required.
+Aggregate public remote job listings from Remote OK, Remotive, and Arbeitnow into one clean, deduplicated dataset. Search by role, skill, company, location, and posting date, then export job titles, companies, locations, salary fields, source URLs, and attribution without supplying an API key.
 
-## What It Extracts
+## Quick start
 
-- Source and source job ID
+Run a small search across all three supported sources:
+
+```json
+{
+  "source": "all",
+  "keywords": ["software"],
+  "location": "",
+  "remoteOnly": true,
+  "dateFrom": "",
+  "maxResults": 10,
+  "maxPagesPerSource": 1,
+  "includeDescription": false
+}
+```
+
+Export results as JSON, CSV, Excel, XML, or HTML, or consume them through the Apify API, schedules, webhooks, Make, Zapier, n8n, and other integrations.
+
+## What it extracts
+
 - Job title and company name
-- Location and remote flag
-- Category and tags
-- Optional job type and salary fields where the source provides them
+- Location and remote-work flag
+- Job type, category, and tags when available
+- Salary text and numeric range when a source provides them
 - Posted date
-- Job URL and apply URL
-- Source attribution
+- Job and application URLs
+- Source name, source job ID, and attribution
 - Matching keyword and scraped timestamp
 - Optional cleaned description text
 
-## Use Cases
+## Supported sources
 
-- Build recruiting lead lists from companies actively hiring
-- Monitor remote hiring trends by keyword, role, and category
-- Enrich job-board or talent-market datasets with source links
-- Track salary ranges where public APIs expose them
-- Research remote-first companies and active hiring signals
+| Source | Coverage | Notes |
+| --- | --- | --- |
+| Remote OK | Remote roles worldwide | Salary and tags are available on some listings. |
+| Remotive | Curated remote roles | Results retain Remotive URLs and attribution. |
+| Arbeitnow | Remote and Europe-focused roles | Supports pagination and a remote-only filter. |
 
-## Pricing
+## Output dataset
 
-| Event | Price | Per 1,000 jobs | Per 10,000 jobs |
-| --- | ---: | ---: | ---: |
-| `job-scraped` | $0.002 | $2.00 | $20.00 |
+The `Jobs` dataset view puts the fields used most often for spreadsheet analysis and workflow automation first.
 
-The actor charges only after a clean job record is saved to the dataset.
+### Verified output sample
+
+This shortened record came from a successful public Actor run:
+
+```json
+{
+  "source": "remoteok",
+  "sourceJobId": "1133689",
+  "title": "Analista de Software Sênior",
+  "companyName": "Banco BV",
+  "location": "São Paulo",
+  "remote": true,
+  "category": "dev",
+  "tags": ["dev", "design", "docker", "java", "cloud"],
+  "postedAt": "2026-06-19T00:00:13+00:00",
+  "jobUrl": "https://remoteok.com/remote-jobs/remote-analista-de-software-senior-banco-bv-1133689",
+  "applyUrl": "https://remoteok.com/remote-jobs/remote-analista-de-software-senior-banco-bv-1133689",
+  "sourceAttribution": "Remote OK",
+  "keywordUsed": "software",
+  "scrapedAt": "2026-06-22T07:52:10.115Z"
+}
+```
+
+Job listings change frequently. Titles, availability, salary details, and URLs reflect what each source exposed when the run completed.
 
 ## Input
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
-| `source` | string | `all` | Search all sources or one source: `remoteok`, `remotive`, `arbeitnow`. |
-| `keywords` | string[] | `["developer"]` | Job title, skill, or company keywords. |
-| `location` | string | empty | Optional text filter for location. |
-| `remoteOnly` | boolean | `true` | Keep only remote jobs where the source exposes this signal. |
-| `dateFrom` | string | empty | Optional ISO date filter for posted date. |
-| `maxResults` | integer | `100` | Maximum clean records to save. |
-| `maxPagesPerSource` | integer | `3` | Page limit for paginated sources. |
-| `includeDescription` | boolean | `false` | Include cleaned job description text. |
+| `source` | string | `all` | Search all sources or one of `remoteok`, `remotive`, or `arbeitnow`. |
+| `keywords` | string[] | `["software"]` | One to ten job-title, skill, or company keywords. |
+| `location` | string | empty | Optional case-insensitive location text filter. |
+| `remoteOnly` | boolean | `true` | Keep only remote jobs where the source exposes that signal. |
+| `dateFrom` | string | empty | Optional ISO date filter for the posting date. |
+| `maxResults` | integer | `10` | Maximum number of clean, unique records to save. |
+| `maxPagesPerSource` | integer | `1` | Page limit for paginated sources. |
+| `includeDescription` | boolean | `false` | Include cleaned description text; this makes records larger. |
 
-## How to Scrape Jobs Aggregator Data (Step by Step)
+At least one non-empty keyword is required. Start with the defaults or set `maxResults` to `1` for the smallest paid sample.
 
-1. Choose `all` or a specific source.
-2. Enter one or more keywords such as `developer`, `data analyst`, or `product manager`.
-3. Optionally set a location filter, date filter, or turn on descriptions.
-4. Run the actor and wait for the dataset to fill.
-5. Export results from the Dataset tab or consume them through the Apify API.
+## Common workflows
 
-## Sample Output
+### Monitor selected roles
 
-```json
-{
-  "source": "remoteok",
-  "sourceJobId": "1133163",
-  "title": "Senior SDET",
-  "companyName": "NDEAVOUR CONSULTING",
-  "location": "Remote",
-  "remote": true,
-  "jobType": "Full-time",
-  "category": "testing",
-  "tags": ["testing", "java", "cloud", "typescript"],
-  "salary": "90000 - 130000",
-  "salaryMin": 90000,
-  "salaryMax": 130000,
-  "postedAt": "2026-06-10T16:00:53+00:00",
-  "jobUrl": "https://remoteok.com/remote-jobs/remote-senior-sdet-ndeavour-consulting-1133163",
-  "applyUrl": "https://remoteok.com/remote-jobs/remote-senior-sdet-ndeavour-consulting-1133163",
-  "sourceAttribution": "Remote OK",
-  "keywordUsed": "developer",
-  "scrapedAt": "2026-06-12T00:00:00.000Z"
-}
+Run a focused keyword such as `data engineer`, `product manager`, or `cybersecurity`, then schedule the Actor and compare source IDs between runs.
+
+### Research remote hiring
+
+Aggregate several role or skill keywords and analyze company, location, category, salary, and posting-date patterns.
+
+### Feed an internal workflow
+
+Export the dataset to a spreadsheet or send it to a data warehouse, notification workflow, or internal recruiting-research tool.
+
+## Pricing
+
+This Actor uses Pay Per Event pricing.
+
+| Event | Price |
+| --- | ---: |
+| Actor start | $0.00005 per GB of memory |
+| Each successfully saved `job-scraped` item | $0.002 |
+
+The default memory is 512 MB, which is billed as the one-event minimum, so the startup charge is approximately $0.00005. A default 10-job run is approximately $0.02005 before any applicable account-level charges.
+
+Each clean job record is saved and charged atomically. Duplicate, filtered, failed, or empty records are not billed as `job-scraped` events, and result processing stops when the user's maximum-cost limit is reached.
+
+## How it works
+
+The Actor calls the selected public JSON APIs, normalizes their fields into one job schema, filters by keyword, location, remote status, and date, sorts recent listings first, deduplicates records, and writes the requested number of clean rows to the default dataset.
+
+If one source is temporarily unavailable, the Actor returns records from the sources that succeeded. It fails only when every selected source fails.
+
+## Limits and source terms
+
+- Source APIs can change fields, availability, rate limits, or terms without notice.
+- Salary, job type, category, tags, and description fields are source-dependent.
+- A posting can be edited, filled, removed, or linked elsewhere after it is collected.
+- Remotive requires its job URLs and source attribution to be retained and restricts republishing its feed on third-party job boards. Review its current API terms for your use case.
+- Arbeitnow asks API users to avoid abusive traffic and appreciates source links.
+- Optional description cleaning converts source HTML to plain text and may not preserve every layout detail.
+
+## API example
+
+```bash
+curl -X POST "https://api.apify.com/v2/acts/fascinating_lentil~jobs-aggregator-scraper/runs?token=YOUR_APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "source": "all",
+    "keywords": ["software"],
+    "remoteOnly": true,
+    "maxResults": 10,
+    "maxPagesPerSource": 1,
+    "includeDescription": false
+  }'
 ```
 
-## How It Works
+## Responsible use
 
-The actor calls public JSON APIs, normalizes each source into a shared job schema, filters by keyword, location, remote status, and date, deduplicates by source ID and title/company/location, then saves clean records to the Apify Dataset.
+Use this Actor only for lawful collection of publicly available job information. You are responsible for complying with each source's terms, attribution requirements, robots rules, privacy laws, employment rules, and regulations that apply to your use case.
 
-## Known Limits
-
-- Source APIs can change fields, rate limits, or terms without notice.
-- Remotive requires linking back to Remotive job URLs and source attribution, and should not be used to repost jobs to third-party job boards.
-- Arbeitnow asks API users not to abuse the service and appreciates source links; its general site terms should be reviewed for your use case.
-- Remote OK includes anti-spam application text inside some descriptions; keep `includeDescription` off if you only need lead fields.
-- Job type and salary fields are source-dependent and omitted from records when unavailable.
-
-## Responsible Use
-
-This Actor is intended for lawful collection of publicly available information only. Users are responsible for ensuring their use complies with the source website's terms, robots.txt, applicable privacy laws, including India's DPDP Act, and all local regulations.
-
-Do not use this Actor to collect, store, sell, or misuse personal data without a lawful basis. The Actor author is not responsible for misuse by end users.
+Do not use the output for spam, discriminatory profiling, unlawful automated employment decisions, or unauthorized republishing. This Actor is an independent tool and is not affiliated with, endorsed by, or sponsored by Remote OK, Remotive, or Arbeitnow.
 
 ## License
 
-Apache-2.0
+Apache-2.0.

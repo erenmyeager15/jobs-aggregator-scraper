@@ -1,25 +1,55 @@
 {
-    "type": "object",
-    "properties": {
-        "source": { "type": "string" },
-        "sourceJobId": { "type": "string" },
-        "title": { "type": "string" },
-        "companyName": { "type": "string" },
-        "location": { "type": ["string", "null"] },
-        "remote": { "type": ["boolean", "null"] },
-        "jobType": { "type": ["string", "null"] },
-        "category": { "type": ["string", "null"] },
-        "tags": { "type": "array", "items": { "type": "string" } },
-        "salary": { "type": ["string", "null"] },
-        "salaryMin": { "type": ["number", "null"] },
-        "salaryMax": { "type": ["number", "null"] },
-        "postedAt": { "type": ["string", "null"] },
-        "jobUrl": { "type": "string" },
-        "applyUrl": { "type": ["string", "null"] },
-        "sourceAttribution": { "type": "string" },
-        "keywordUsed": { "type": ["string", "null"] },
-        "scrapedAt": { "type": "string" },
-        "descriptionText": { "type": "string" }
-    },
-    "required": ["source", "sourceJobId", "title", "companyName", "jobUrl", "sourceAttribution", "scrapedAt"]
+  "actorSpecification": 1,
+  "views": {
+    "jobs": {
+      "title": "Jobs",
+      "transformation": {
+        "fields": [
+          "title",
+          "companyName",
+          "location",
+          "remote",
+          "jobType",
+          "salary",
+          "salaryMin",
+          "salaryMax",
+          "category",
+          "tags",
+          "postedAt",
+          "jobUrl",
+          "applyUrl",
+          "source",
+          "sourceJobId",
+          "sourceAttribution",
+          "keywordUsed",
+          "descriptionText",
+          "scrapedAt"
+        ]
+      },
+      "display": {
+        "component": "table",
+        "properties": {
+          "title": { "label": "Title", "format": "text" },
+          "companyName": { "label": "Company", "format": "text" },
+          "location": { "label": "Location", "format": "text" },
+          "remote": { "label": "Remote", "format": "boolean" },
+          "jobType": { "label": "Job Type", "format": "text" },
+          "salary": { "label": "Salary", "format": "text" },
+          "salaryMin": { "label": "Salary Min", "format": "number" },
+          "salaryMax": { "label": "Salary Max", "format": "number" },
+          "category": { "label": "Category", "format": "text" },
+          "tags": { "label": "Tags", "format": "array" },
+          "postedAt": { "label": "Posted At", "format": "date" },
+          "jobUrl": { "label": "Job URL", "format": "link" },
+          "applyUrl": { "label": "Apply URL", "format": "link" },
+          "source": { "label": "Source", "format": "text" },
+          "sourceJobId": { "label": "Source Job ID", "format": "text" },
+          "sourceAttribution": { "label": "Attribution", "format": "text" },
+          "keywordUsed": { "label": "Keyword", "format": "text" },
+          "descriptionText": { "label": "Description", "format": "text" },
+          "scrapedAt": { "label": "Scraped At", "format": "date" }
+        }
+      }
+    }
+  }
 }

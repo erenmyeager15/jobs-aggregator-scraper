@@ -1,6 +1,6 @@
 {
     "title": "Jobs Aggregator Scraper Input",
-    "description": "Search no-key public job APIs and export clean, deduplicated job listings.",
+    "description": "Search public no-key job APIs and export clean, deduplicated remote job listings.",
     "type": "object",
     "schemaVersion": 1,
     "properties": {
@@ -19,11 +19,14 @@
             "type": "array",
             "description": "Job title, skill, or company keywords. Records must match at least one keyword.",
             "editor": "stringList",
-            "prefill": ["developer"],
+            "default": ["software"],
+            "prefill": ["software"],
             "example": ["developer", "data analyst", "product manager"],
             "items": {
                 "type": "string"
-            }
+            },
+            "minItems": 1,
+            "maxItems": 10
         },
         "location": {
             "title": "Location Contains",
@@ -54,8 +57,8 @@
             "type": "integer",
             "description": "Maximum clean job records to save.",
             "editor": "number",
-            "default": 100,
-            "prefill": 100,
+            "default": 10,
+            "prefill": 10,
             "minimum": 1,
             "maximum": 1000
         },
@@ -64,8 +67,8 @@
             "type": "integer",
             "description": "Pagination limit for sources that expose pages. Remote OK and Remotive are single-response APIs.",
             "editor": "number",
-            "default": 3,
-            "prefill": 3,
+            "default": 1,
+            "prefill": 1,
             "minimum": 1,
             "maximum": 20
         },

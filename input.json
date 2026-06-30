@@ -1,10 +1,10 @@
 {
     "source": "all",
-    "keywords": ["developer"],
+    "keywords": ["software"],
     "location": "",
     "remoteOnly": true,
     "dateFrom": "",
-    "maxResults": 20,
-    "maxPagesPerSource": 2,
+    "maxResults": 10,
+    "maxPagesPerSource": 1,
     "includeDescription": false
 }

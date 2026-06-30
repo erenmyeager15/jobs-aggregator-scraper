@@ -2,7 +2,7 @@
     "name": "jobs-aggregator-scraper",
     "version": "1.0.0",
     "type": "module",
-    "description": "Apify Actor that aggregates no-key public job APIs into clean job lead records.",
+    "description": "Apify Actor that aggregates public no-key remote job APIs into clean job records.",
     "engines": {
         "node": ">=20.0.0"
     },

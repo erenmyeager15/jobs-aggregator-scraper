@@ -1,63 +1,33 @@
 {
     "actorSpecification": 1,
     "name": "jobs-aggregator-scraper",
-    "title": "Jobs Aggregator Scraper - Remote Job APIs",
-    "description": "Scrape no-key public job APIs from Remote OK, Remotive, and Arbeitnow into one clean dataset with titles, companies, locations, salaries, URLs, and source attribution.",
+    "title": "Jobs Aggregator Scraper: Remote Job APIs",
+    "description": "Aggregate public remote job listings from Remote OK, Remotive, and Arbeitnow into one clean dataset with titles, companies, locations, salaries, URLs, and source attribution.",
     "version": "1.0",
-    "categories": ["JOBS", "RESEARCH"],
+    "buildTag": "latest",
+    "categories": ["JOBS", "RESEARCH", "AUTOMATION"],
     "dockerfile": "Dockerfile",
     "input": "../INPUT_SCHEMA.json",
     "readme": "../README.md",
     "output": "./output_schema.json",
+    "exampleRunInput": {
+        "body": "{\"source\":\"all\",\"keywords\":[\"software\"],\"location\":\"\",\"remoteOnly\":true,\"dateFrom\":\"\",\"maxResults\":1,\"maxPagesPerSource\":1,\"includeDescription\":false}",
+        "contentType": "application/json; charset=utf-8"
+    },
     "storages": {
-        "dataset": {
-            "actorSpecification": 1,
-            "views": {
-                "jobs": {
-                    "title": "Job Records",
-                    "transformation": {
-                        "fields": [
-                            "source",
-                            "keywordUsed",
-                            "sourceJobId",
-                            "title",
-                            "companyName",
-                            "location",
-                            "remote",
-                            "category",
-                            "postedAt",
-                            "jobUrl",
-                            "applyUrl",
-                            "sourceAttribution",
-                            "scrapedAt"
-                        ]
-                    },
-                    "display": {
-                        "component": "table",
-                        "properties": {
-                            "source": { "label": "Source", "format": "text" },
-                            "keywordUsed": { "label": "Keyword", "format": "text" },
-                            "sourceJobId": { "label": "Source Job ID", "format": "text" },
-                            "title": { "label": "Title", "format": "text" },
-                            "companyName": { "label": "Company", "format": "text" },
-                            "location": { "label": "Location", "format": "text" },
-                            "remote": { "label": "Remote", "format": "boolean" },
-                            "category": { "label": "Category", "format": "text" },
-                            "postedAt": { "label": "Posted At", "format": "date" },
-                            "jobUrl": { "label": "Job URL", "format": "link" },
-                            "applyUrl": { "label": "Apply URL", "format": "link" },
-                            "sourceAttribution": { "label": "Attribution", "format": "text" },
-                            "scrapedAt": { "label": "Scraped At", "format": "date" }
-                        }
-                    }
-                }
-            }
-        }
+        "dataset": "./dataset_schema.json"
     },
     "pricingInfo": {
         "pricingModel": "PAY_PER_EVENT",
         "pricingPerEvent": {
             "actorChargeEvents": {
+                "apify-actor-start": {
+                    "eventTitle": "Actor Start",
+                    "eventDescription": "Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).",
+                    "eventPriceUsd": 0.00005,
+                    "isPrimaryEvent": false,
+                    "isOneTimeEvent": true
+                },
                 "job-scraped": {
                     "eventTitle": "Job scraped",
                     "eventDescription": "Charged once for each clean job record saved to the dataset.",
@@ -71,9 +41,9 @@
     "defaultRunOptions": {
         "build": "latest",
         "memoryMbytes": 512,
-        "timeoutSecs": 3600
+        "timeoutSecs": 900
     },
     "minMemoryMbytes": 512,
-    "maxMemoryMbytes": 4096,
+    "maxMemoryMbytes": 1024,
     "webScraper": false
 }

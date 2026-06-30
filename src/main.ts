@@ -4,12 +4,12 @@ import type { ActorInput, JobRecord, SourceName } from './types.js';
 
 const DEFAULT_INPUT: ActorInput = {
     source: 'all',
-    keywords: ['developer'],
+    keywords: ['software'],
     location: '',
     remoteOnly: true,
     dateFrom: '',
-    maxResults: 100,
-    maxPagesPerSource: 3,
+    maxResults: 10,
+    maxPagesPerSource: 1,
     includeDescription: false,
 };
 
@@ -31,15 +31,27 @@ try {
     console.log(`Prepared ${records.length} clean job record(s).`);
 
     let pushed = 0;
+    let spendingLimitReached = false;
     for (const record of records) {
+        if (spendingLimitReached) break;
         if (!isChargeableJob(record)) continue;
 
-        await Actor.pushData(record);
-        await chargeJobEvent();
-        pushed++;
+        const chargeResult = await Actor.pushData(record, 'job-scraped');
+        const recordWasSaved = chargeResult.chargedCount > 0 || !chargeResult.eventChargeLimitReached;
+        if (recordWasSaved) pushed++;
+
+        if (chargeResult.eventChargeLimitReached) {
+            spendingLimitReached = true;
+            const message = `Stopped at the user's spending limit after ${pushed} job(s).`;
+            await Actor.setStatusMessage(message);
+            console.warn(message);
+        }
     }
 
-    console.log(`Finished. Saved ${pushed} job record(s).`);
+    if (!spendingLimitReached) {
+        await Actor.setStatusMessage(`Finished with ${pushed} unique job record(s).`);
+        console.log(`Finished. Saved ${pushed} job record(s).`);
+    }
 } finally {
     await Actor.exit();
 }
@@ -64,10 +76,13 @@ function normalizeInput(rawInput: Partial<ActorInput>): ActorInput {
 
 function normalizeStringList(value: string[] | undefined, fallback: string[]): string[] {
     const source = Array.isArray(value) ? value : fallback;
-    return source
+    const normalized = source
         .map((item) => String(item ?? '').trim())
         .filter(Boolean)
-        .filter((item, index, all) => all.indexOf(item) === index);
+        .filter((item, index, all) => all.indexOf(item) === index)
+        .slice(0, 10);
+
+    return normalized.length > 0 ? normalized : fallback;
 }
 
 function normalizeInteger(value: number | undefined, fallback: number, min: number, max: number): number {
@@ -88,15 +103,4 @@ function isSourceName(value: unknown): value is SourceName {
 
 function isChargeableJob(record: JobRecord): boolean {
     return Boolean(record.source && record.sourceJobId && record.title && record.companyName && record.jobUrl);
-}
-
-async function chargeJobEvent(): Promise<void> {
-    if (!Actor.isAtHome()) return;
-
-    try {
-        await Actor.charge({ eventName: 'job-scraped' });
-    } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
-        console.warn(`PPE charge failed; continuing: ${message}`);
-    }
 }
